@@ -76,6 +76,45 @@ namespace AdventOfCode._2022.Solutions.Day2
             }
 
             Console.WriteLine($"[1/2] Final score for this strategy is {totalPoints}");
+
+
+            //part 2
+            totalPoints = 0;
+            foreach(var gameRound in normalizedInput.Split("\n"))
+            {
+                var shapesPlayed = gameRound.Trim().Split(" ");
+
+                var opponentShape = normalizationDict.Where(x => x.Value.Contains(shapesPlayed[0])).First().Key;
+                var strategy = shapesPlayed[1];
+
+                var myShape = strategy switch
+                {
+                    "X" => losingRules.Where(x => x.Value == opponentShape).First().Key,
+                    "Y" => opponentShape,
+                    "Z" => losingRules[opponentShape]
+                };
+
+                var isRoundLost = losingRules[myShape] == opponentShape;
+                var isTie = myShape == opponentShape;
+
+                var baseScore = scores[myShape];
+
+                if (isRoundLost)
+                {
+                    totalPoints += baseScore;
+                    continue;
+                }
+
+                if (isTie)
+                {
+                    totalPoints += baseScore + 3;
+                    continue;
+                }
+
+                totalPoints += baseScore + 6;
+            }
+
+            Console.WriteLine($"[2/2] Final score for this strategy is {totalPoints}");
         }
     }
 }
